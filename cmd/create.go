@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/joselrodrigues/jira-cli/internal/jira"
+	"github.com/joselrodrigues/atlassian/internal/jira"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -62,7 +62,7 @@ var createCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(createCmd)
+	jiraCmd.AddCommand(createCmd)
 
 	createCmd.Flags().StringP("project", "p", "", "Project key (required)")
 	createCmd.MarkFlagRequired("project")

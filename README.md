@@ -1,15 +1,21 @@
-# jira-cli
+# atlassian
 
-A fast, lightweight command-line interface for Jira operations built in Go.
+A fast, lightweight command-line interface for Atlassian products (Jira, Confluence planned) built in Go.
 
 ## Features
 
+### Jira
 - **Issue Management**: Get, create, update, and search issues
 - **Comments**: List and add comments to issues
 - **Transitions**: View available transitions and change issue status
 - **Sprint & My Issues**: Quick access to sprint issues and personal assignments
 - **Multiple Output Formats**: Text (default) and JSON
 - **Single Binary**: No runtime dependencies required
+
+### Confluence (Planned)
+- Page management
+- Space operations
+- Content search
 
 ## Installation
 
@@ -22,7 +28,7 @@ A fast, lightweight command-line interface for Jira operations built in Go.
 
 ```bash
 # Clone or navigate to the project
-cd jira-cli
+cd atlassian
 
 # Build the binary
 make build
@@ -40,66 +46,68 @@ make install
 
 ## Usage
 
+All Jira commands are under the `jira` subcommand:
+
 ### Get Issue Details
 
 ```bash
-jira-cli get PROJECT-123
-jira-cli get PROJECT-123 -o json    # JSON output
+atlassian jira get PROJECT-123
+atlassian jira get PROJECT-123 -o json    # JSON output
 ```
 
 ### Create Issue
 
 ```bash
-jira-cli create --project MYPROJ --type Story --summary "New feature"
-jira-cli create -p MYPROJ -t Bug -s "Fix login" -d "Description here"
+atlassian jira create --project MYPROJ --type Story --summary "New feature"
+atlassian jira create -p MYPROJ -t Bug -s "Fix login" -d "Description here"
 
 # Read description from stdin (useful for long descriptions)
-echo "Long description..." | jira-cli create -p MYPROJ -t Story -s "Title" --stdin
+echo "Long description..." | atlassian jira create -p MYPROJ -t Story -s "Title" --stdin
 ```
 
 ### Update Issue
 
 ```bash
-jira-cli update PROJECT-123 --summary "Updated title"
-jira-cli update PROJECT-123 --description "New description"
+atlassian jira update PROJECT-123 --summary "Updated title"
+atlassian jira update PROJECT-123 --description "New description"
 
 # Read description from stdin
-cat description.txt | jira-cli update PROJECT-123 --stdin
+cat description.txt | atlassian jira update PROJECT-123 --stdin
 ```
 
 ### Search Issues (JQL)
 
 ```bash
-jira-cli search "project = MYPROJ AND status = 'In Progress'"
-jira-cli search "assignee = currentUser()" --max 100
+atlassian jira search "project = MYPROJ AND status = 'In Progress'"
+atlassian jira search "assignee = currentUser()" --max 100
 ```
 
 ### My Issues
 
 ```bash
-jira-cli my-issues                 # All my open issues
-jira-cli my-issues -o json         # JSON output
+atlassian jira my-issues                 # All my open issues
+atlassian jira my-issues -o json         # JSON output
 ```
 
 ### Sprint Issues
 
 ```bash
-jira-cli sprint --project MYPROJ   # Issues in current sprint
-jira-cli sprint -p MYPROJ          # Short form
+atlassian jira sprint --project MYPROJ   # Issues in current sprint
+atlassian jira sprint -p MYPROJ          # Short form
 ```
 
 ### Comments
 
 ```bash
-jira-cli comment list PROJECT-123
-jira-cli comment add PROJECT-123 "This is my comment"
+atlassian jira comment list PROJECT-123
+atlassian jira comment add PROJECT-123 "This is my comment"
 ```
 
 ### Transitions
 
 ```bash
-jira-cli transition list PROJECT-123              # See available transitions
-jira-cli transition do PROJECT-123 "In Progress"  # Change status
+atlassian jira transition list PROJECT-123              # See available transitions
+atlassian jira transition do PROJECT-123 "In Progress"  # Change status
 ```
 
 ## Output Formats
@@ -122,7 +130,7 @@ Human-readable markdown-style tables:
 Machine-readable JSON output:
 
 ```bash
-jira-cli get PROJECT-123 -o json
+atlassian jira get PROJECT-123 -o json
 ```
 
 ```json
@@ -138,12 +146,13 @@ jira-cli get PROJECT-123 -o json
 ## Project Structure
 
 ```
-jira-cli/
+atlassian/
 ├── main.go                 # Entry point
 ├── go.mod                  # Go module definition
 ├── Makefile                # Build automation
 ├── cmd/                    # CLI commands (Cobra)
 │   ├── root.go             # Root command and config
+│   ├── jira.go             # Jira subcommand
 │   ├── get.go              # Get issue
 │   ├── create.go           # Create issue
 │   ├── update.go           # Update issue
@@ -159,7 +168,7 @@ jira-cli/
 │       ├── comments.go     # Comment operations
 │       └── transitions.go  # Transition operations
 └── bin/
-    └── jira-cli            # Compiled binary
+    └── atlassian           # Compiled binary
 ```
 
 ## Development
@@ -167,7 +176,7 @@ jira-cli/
 ### Building
 
 ```bash
-make build          # Build binary to bin/jira-cli
+make build          # Build binary to bin/atlassian
 make install        # Build and install to /usr/local/bin
 make clean          # Remove build artifacts
 ```

@@ -1,7 +1,7 @@
-# jira-cli Makefile
+# atlassian Makefile
 
 # Variables
-BINARY_NAME=jira-cli
+BINARY_NAME=atlassian
 BINARY_DIR=bin
 INSTALL_PATH=/usr/local/bin
 GO=go
@@ -99,7 +99,7 @@ run:
 # Show help
 .PHONY: help
 help:
-	@echo "jira-cli Makefile"
+	@echo "atlassian Makefile"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make build          Build the binary"

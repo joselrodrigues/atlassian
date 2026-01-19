@@ -9,9 +9,9 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "jira-cli",
-	Short: "CLI for interacting with Jira API",
-	Long:  `A command-line interface for Jira operations including issues, comments, and transitions.`,
+	Use:   "atlassian",
+	Short: "CLI for interacting with Atlassian products (Jira, Confluence)",
+	Long:  `A command-line interface for Atlassian products including Jira operations (issues, comments, transitions) and Confluence (planned).`,
 }
 
 func Execute() {

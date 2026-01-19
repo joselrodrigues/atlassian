@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/joselrodrigues/jira-cli/internal/jira"
+	"github.com/joselrodrigues/atlassian/internal/jira"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -71,7 +71,7 @@ var commentAddCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(commentCmd)
+	jiraCmd.AddCommand(commentCmd)
 	commentCmd.AddCommand(commentListCmd)
 	commentCmd.AddCommand(commentAddCmd)
 }

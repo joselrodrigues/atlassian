@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/joselrodrigues/jira-cli/internal/jira"
+	"github.com/joselrodrigues/atlassian/internal/jira"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -61,7 +61,7 @@ var updateCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(updateCmd)
+	jiraCmd.AddCommand(updateCmd)
 
 	updateCmd.Flags().StringP("summary", "s", "", "New summary")
 	updateCmd.Flags().StringP("description", "d", "", "New description")

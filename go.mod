@@ -1,4 +1,4 @@
-module github.com/joselrodrigues/jira-cli
+module github.com/joselrodrigues/atlassian
 
 go 1.25.5
 
