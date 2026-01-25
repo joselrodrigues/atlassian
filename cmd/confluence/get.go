@@ -3,7 +3,6 @@ package confluence
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/joselrodrigues/atlassian/internal/confluence"
@@ -16,7 +15,7 @@ var getCmd = &cobra.Command{
 	Short: "Get a page by ID",
 	Long:  `Retrieve a Confluence page by its ID, including metadata and optionally the body content.`,
 	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		pageID := args[0]
 		bodyFormat, _ := cmd.Flags().GetString("body-format")
 		output := viper.GetString("output")
@@ -29,11 +28,11 @@ var getCmd = &cobra.Command{
 		client := confluence.NewClient()
 		page, err := client.GetPage(pageID, expand)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("failed to get page: %w", err)
 		}
 
 		printPage(page, output, bodyFormat)
+		return nil
 	},
 }
 

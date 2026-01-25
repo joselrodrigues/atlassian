@@ -3,7 +3,6 @@ package confluence
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/joselrodrigues/atlassian/internal/confluence"
 	"github.com/spf13/cobra"
@@ -20,7 +19,7 @@ Examples:
   echo "<p>New content</p>" | atlassian confluence update 123456 --stdin
   atlassian confluence update 123456 --title "Title" --message "Updated via CLI"`,
 	Args: cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		pageID := args[0]
 		title, _ := cmd.Flags().GetString("title")
 		message, _ := cmd.Flags().GetString("message")
@@ -31,8 +30,7 @@ Examples:
 
 		currentPage, err := client.GetPage(pageID, []string{"body.storage", "version"})
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error getting current page: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("failed to get current page: %w", err)
 		}
 
 		newTitle := currentPage.Title
@@ -48,8 +46,7 @@ Examples:
 		}
 
 		if title == "" && !useStdin {
-			fmt.Fprintln(os.Stderr, "Error: must specify --title or --stdin")
-			os.Exit(1)
+			return fmt.Errorf("must specify --title or --stdin")
 		}
 
 		currentVersion := 1
@@ -59,8 +56,7 @@ Examples:
 
 		page, err := client.UpdatePage(pageID, newTitle, newBody, currentVersion, message)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("failed to update page: %w", err)
 		}
 
 		if output == "json" {
@@ -73,6 +69,7 @@ Examples:
 			fmt.Printf("Version: %d\n", page.Version.Number)
 			fmt.Printf("URL: %s%s\n", viper.GetString("confluence_base_url"), page.Links.WebUI)
 		}
+		return nil
 	},
 }
 

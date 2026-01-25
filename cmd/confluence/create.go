@@ -17,11 +17,13 @@ var createCmd = &cobra.Command{
 	Short: "Create a new page",
 	Long: `Create a new Confluence page in a space.
 
+If --stdin is not provided, the page is created with a default body: "<p>New page content</p>"
+
 Examples:
   atlassian confluence create -s MYSPACE -t "My New Page"
   atlassian confluence create -s MYSPACE -t "Child Page" --parent 123456
   echo "<p>Content</p>" | atlassian confluence create -s MYSPACE -t "Page" --stdin`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		spaceKey, _ := cmd.Flags().GetString("space")
 		title, _ := cmd.Flags().GetString("title")
 		parentID, _ := cmd.Flags().GetString("parent")
@@ -29,12 +31,10 @@ Examples:
 		output := viper.GetString("output")
 
 		if spaceKey == "" {
-			fmt.Fprintln(os.Stderr, "Error: --space/-s flag is required")
-			os.Exit(1)
+			return fmt.Errorf("--space/-s flag is required")
 		}
 		if title == "" {
-			fmt.Fprintln(os.Stderr, "Error: --title/-t flag is required")
-			os.Exit(1)
+			return fmt.Errorf("--title/-t flag is required")
 		}
 
 		var body string
@@ -47,8 +47,7 @@ Examples:
 		client := confluence.NewClient()
 		page, err := client.CreatePage(spaceKey, title, body, parentID)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("failed to create page: %w", err)
 		}
 
 		if output == "json" {
@@ -60,6 +59,7 @@ Examples:
 			fmt.Printf("Title: %s\n", page.Title)
 			fmt.Printf("URL: %s%s\n", viper.GetString("confluence_base_url"), page.Links.WebUI)
 		}
+		return nil
 	},
 }
 

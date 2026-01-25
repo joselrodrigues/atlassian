@@ -3,7 +3,6 @@ package confluence
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/joselrodrigues/atlassian/internal/confluence"
 	"github.com/spf13/cobra"
@@ -15,26 +14,25 @@ var spacesCmd = &cobra.Command{
 	Short: "List spaces or get space details",
 	Long:  `List all available Confluence spaces or get details of a specific space by its key.`,
 	Args:  cobra.MaximumNArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		client := confluence.NewClient()
 		output := viper.GetString("output")
 
 		if len(args) == 1 {
 			space, err := client.GetSpace(args[0])
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-				os.Exit(1)
+				return fmt.Errorf("failed to get space: %w", err)
 			}
 			printSpace(space, output)
 		} else {
 			limit, _ := cmd.Flags().GetInt("limit")
 			spaces, err := client.ListSpaces(limit)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-				os.Exit(1)
+				return fmt.Errorf("failed to list spaces: %w", err)
 			}
 			printSpaces(spaces, output)
 		}
+		return nil
 	},
 }
 

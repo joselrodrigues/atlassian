@@ -3,7 +3,6 @@ package confluence
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/joselrodrigues/atlassian/internal/confluence"
 	"github.com/spf13/cobra"
@@ -20,7 +19,7 @@ Examples:
   atlassian confluence search "type=page AND title~'Testing'"
   atlassian confluence search "text~'ABsmartly'" --limit 50`,
 	Args: cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		cql := args[0]
 		limit, _ := cmd.Flags().GetInt("limit")
 		output := viper.GetString("output")
@@ -28,11 +27,11 @@ Examples:
 		client := confluence.NewClient()
 		results, err := client.SearchContent(cql, []string{"space", "version"}, limit)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("failed to search: %w", err)
 		}
 
 		printSearchResults(results, output)
+		return nil
 	},
 }
 

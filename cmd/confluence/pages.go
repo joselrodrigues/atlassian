@@ -3,7 +3,6 @@ package confluence
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/joselrodrigues/atlassian/internal/confluence"
 	"github.com/spf13/cobra"
@@ -14,24 +13,23 @@ var pagesCmd = &cobra.Command{
 	Use:   "pages",
 	Short: "List pages in a space",
 	Long:  `List all pages in a Confluence space.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		spaceKey, _ := cmd.Flags().GetString("space")
 		limit, _ := cmd.Flags().GetInt("limit")
 		output := viper.GetString("output")
 
 		if spaceKey == "" {
-			fmt.Fprintln(os.Stderr, "Error: --space/-s flag is required")
-			os.Exit(1)
+			return fmt.Errorf("--space/-s flag is required")
 		}
 
 		client := confluence.NewClient()
 		pages, err := client.GetSpaceContent(spaceKey, "page", limit)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("failed to list pages: %w", err)
 		}
 
 		printPages(pages, output)
+		return nil
 	},
 }
 
