@@ -103,6 +103,15 @@ atlassian jira assign PROJECT-123 5b10ac8d82e05b22cc7d4ef5  # Cloud example
 atlassian jira assign PROJECT-123 --unassign
 ```
 
+#### Current User (whoami)
+
+Get the current authenticated user's information:
+
+```bash
+atlassian jira whoami
+atlassian jira whoami -o json
+```
+
 #### Search Users
 
 Returns user identifier appropriate for your Jira instance (Server: `name`, Cloud: `accountId`):

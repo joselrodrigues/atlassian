@@ -23,6 +23,20 @@ func (u *UserSearchResult) GetIdentifier(isCloud bool) string {
 	return u.Name
 }
 
+func (c *Client) GetCurrentUser() (*UserSearchResult, error) {
+	data, err := c.Get("/myself")
+	if err != nil {
+		return nil, err
+	}
+
+	var user UserSearchResult
+	if err := json.Unmarshal(data, &user); err != nil {
+		return nil, fmt.Errorf("failed to parse user: %w", err)
+	}
+
+	return &user, nil
+}
+
 func (c *Client) SearchUsers(query string) ([]UserSearchResult, error) {
 	params := url.Values{}
 	params.Set("username", query)
