@@ -5,11 +5,12 @@ A fast, lightweight command-line interface for Atlassian products (Jira & Conflu
 ## Features
 
 ### Jira
+- **Server & Cloud Support**: Auto-detects instance type (Server uses `name`, Cloud uses `accountId`)
 - **Issue Management**: Get, create, update, and search issues
-- **Assignments**: Assign/unassign users to issues
+- **Assignments**: Assign/unassign users to issues (works with both Server and Cloud)
 - **Story Points**: Set story points on issues
 - **Sprints**: List boards, sprints, and move issues between sprints
-- **Users**: Search for users to get accountId
+- **Users**: Search for users (returns appropriate identifier per instance type)
 - **Fields**: Discover custom field IDs (Story Points, Sprint, etc.)
 - **Comments**: List and add comments to issues
 - **Transitions**: View available transitions and change issue status
@@ -88,13 +89,23 @@ cat description.txt | atlassian jira update PROJECT-123 --stdin
 
 #### Assign Issue
 
+Works with both Jira Server and Cloud (auto-detected):
+
 ```bash
+# Using email (searches for user, works on both Server and Cloud)
 atlassian jira assign PROJECT-123 user@email.com
-atlassian jira assign PROJECT-123 5b10ac8d82e05b22cc7d4ef5
+
+# Using direct identifier (Server: username, Cloud: accountId)
+atlassian jira assign PROJECT-123 john.doe@company.com   # Server example
+atlassian jira assign PROJECT-123 5b10ac8d82e05b22cc7d4ef5  # Cloud example
+
+# Unassign
 atlassian jira assign PROJECT-123 --unassign
 ```
 
 #### Search Users
+
+Returns user identifier appropriate for your Jira instance (Server: `name`, Cloud: `accountId`):
 
 ```bash
 atlassian jira users --query "john"
